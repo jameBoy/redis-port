@@ -199,16 +199,17 @@ func (cmd *cmdSync) SyncRDBFile(reader *bufio.Reader, target, passwd string, nsi
 				}()
 				c := openRedisConn(target, passwd)
 				defer c.Close()
-				var lastdb uint32 = 0
+				//var lastdb uint32 = 0
 				for e := range pipe {
 					if !acceptDB(e.DB) {
 						cmd.ignore.Incr()
 					} else {
 						cmd.nentry.Incr()
-						if e.DB != lastdb {
-							lastdb = e.DB
-							selectDB(c, lastdb)
-						}
+						//修改只往db0里写数据
+						//if e.DB != lastdb {
+						//	lastdb = e.DB
+						//	selectDB(c, lastdb)
+						//}
 						restoreRdbEntry(c, e)
 					}
 				}
